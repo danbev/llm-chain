@@ -1792,6 +1792,7 @@ version = "0.13.0"
 dependencies = [
  "anyhow",
  "async-trait",
+ "futures",
  "lazy_static",
  "llm-chain",
  "llm-chain-llama-sys",

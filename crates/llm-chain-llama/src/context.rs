@@ -7,7 +7,7 @@ use crate::options::LlamaInvocation;
 use anyhow::Result;
 use llm_chain_llama_sys::{
     llama_context, llama_context_default_params, llama_context_params, llama_eval, llama_free,
-    llama_get_logits, llama_init_from_file, llama_n_vocab,
+    llama_get_embeddings, llama_get_logits, llama_init_from_file, llama_n_embd, llama_n_vocab,
     llama_sample_frequency_and_presence_penalties, llama_sample_repetition_penalty,
     llama_sample_tail_free, llama_sample_temperature, llama_sample_token,
     llama_sample_token_greedy, llama_sample_token_mirostat, llama_sample_token_mirostat_v2,
@@ -118,6 +118,15 @@ impl LLamaContext {
     }
     pub fn llama_n_vocab(&self) -> i32 {
         unsafe { llama_n_vocab(self.ctx) }
+    }
+
+    pub fn llama_get_embeddings(&self) -> Vec<f32> {
+        unsafe {
+            let len = llama_n_embd(self.ctx);
+            let ptr = llama_get_embeddings(self.ctx);
+            let slice = std::slice::from_raw_parts_mut(ptr, len as usize);
+            slice.to_vec()
+        }
     }
 
     // Executes the LLama sampling process with the specified configuration.

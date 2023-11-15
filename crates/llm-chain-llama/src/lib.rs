@@ -22,6 +22,7 @@
 //! Happy coding, and enjoy the amazing world of LLMs with llm-chain-llama! 🥳🚀
 
 mod context;
+pub mod embeddings;
 mod executor;
 mod options;
 mod tokenizer;
