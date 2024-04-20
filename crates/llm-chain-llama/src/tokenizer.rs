@@ -41,7 +41,7 @@ fn to_output(context: &LLamaContext, token: i32) -> String {
 /// # Returns
 ///
 /// A Vec of llama_tokens representing the tokenized input.
-pub(crate) fn tokenize(
+pub fn tokenize(
     context: &LLamaContext,
     text: &str,
     add_bos: bool,
@@ -80,7 +80,7 @@ pub(crate) fn tokenize(
     res
 }
 
-pub(crate) fn tokens_to_string(context: &LLamaContext, embd: &[i32]) -> String {
+pub fn tokens_to_string(context: &LLamaContext, embd: &[i32]) -> String {
     let bfr = String::with_capacity(embd.len() * 2);
     embd.iter()
         .map(|token| to_output(context, *token))

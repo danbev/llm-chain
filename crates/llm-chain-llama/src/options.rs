@@ -13,23 +13,23 @@ use crate::model::ModelParams;
 
 /// Represents a concrete call to the LLM model, with all the parameters specified, and no implicit behavior.
 pub struct LlamaInvocation {
-    pub(crate) n_tok_predict: usize,
-    pub(crate) logit_bias: HashMap<i32, f32>,
-    pub(crate) top_k: i32,
-    pub(crate) top_p: f32,
-    pub(crate) tfs_z: f32,
-    pub(crate) typical_p: f32,
-    pub(crate) temp: f32,
-    pub(crate) repeat_penalty: f32,
-    pub(crate) repeat_last_n: i32,
-    pub(crate) frequency_penalty: f32,
-    pub(crate) presence_penalty: f32,
-    pub(crate) mirostat: i32,
-    pub(crate) mirostat_tau: f32,
-    pub(crate) mirostat_eta: f32,
-    pub(crate) penalize_nl: bool,
-    pub(crate) stop_sequence: Vec<String>,
-    pub(crate) prompt: Prompt,
+    pub n_tok_predict: usize,
+    pub logit_bias: HashMap<i32, f32>,
+    pub top_k: i32,
+    pub top_p: f32,
+    pub tfs_z: f32,
+    pub typical_p: f32,
+    pub temp: f32,
+    pub repeat_penalty: f32,
+    pub repeat_last_n: i32,
+    pub frequency_penalty: f32,
+    pub presence_penalty: f32,
+    pub mirostat: i32,
+    pub mirostat_tau: f32,
+    pub mirostat_eta: f32,
+    pub penalize_nl: bool,
+    pub stop_sequence: Vec<String>,
+    pub prompt: Prompt,
 }
 
 macro_rules! opt_extract {
@@ -45,7 +45,7 @@ macro_rules! opt_extract {
 }
 
 impl LlamaInvocation {
-    pub(crate) fn new(
+    pub fn new(
         opt: OptionsCascade,
         prompt: &Prompt,
     ) -> Result<LlamaInvocation, ExecutorCreationError> {
@@ -91,7 +91,7 @@ impl LlamaInvocation {
 }
 
 lazy_static! {
-    pub(crate) static ref DEFAULT_OPTIONS: Options = options!(
+    pub static ref DEFAULT_OPTIONS: Options = options!(
         // ModelType: "llama", // not used
         NThreads: 1_usize,
         MaxTokens: 0_usize,

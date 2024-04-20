@@ -21,13 +21,13 @@
 //!
 //! Happy coding, and enjoy the amazing world of LLMs with llm-chain-llama! 🥳🚀
 
-mod batch;
-mod context;
+pub mod batch;
+pub mod context;
 pub mod embeddings;
 mod executor;
-mod model;
-mod options;
-mod tokenizer;
+pub mod model;
+pub mod options;
+pub mod tokenizer;
 
 pub use context::ContextParams;
 pub use executor::Executor;

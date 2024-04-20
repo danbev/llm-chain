@@ -16,6 +16,7 @@ use llm_chain_llama_sys::{
 };
 
 pub use batch::LlamaBatch;
+use std::collections::HashMap;
 
 #[derive(Debug, thiserror::Error)]
 #[error("LLAMA.cpp returned error-code {0}")]
@@ -114,7 +115,7 @@ impl From<llama_context_params> for ContextParams {
 }
 
 // Represents the LLamaContext which wraps FFI calls to the llama.cpp library.
-pub(crate) struct LLamaContext {
+pub struct LLamaContext {
     ctx: *mut llama_context,
     pub model: *mut llama_model,
 }
@@ -177,6 +178,23 @@ impl LLamaContext {
         last_n_tokens_data: &[i32],
         last_n_tokens_size: i32,
         input: &LlamaInvocation,
+        batch_n_tokens: i32,
+    ) -> i32 {
+        self.llama_sample_with_options(
+            n_ctx,
+            last_n_tokens_data,
+            last_n_tokens_size,
+            input.into(),
+            batch_n_tokens,
+        )
+    }
+
+    pub fn llama_sample_with_options(
+        &self,
+        n_ctx: i32,
+        last_n_tokens_data: &[i32],
+        last_n_tokens_size: i32,
+        input: SampleOptions,
         batch_n_tokens: i32,
     ) -> i32 {
         let top_k = if input.top_k <= 0 {
@@ -344,6 +362,45 @@ impl LLamaContext {
         let result_bytes: Vec<u8> = result.into_iter().map(|b| b as u8).collect();
         String::from_utf8(result_bytes)
     }
+}
+
+// Write a From LlamaInvocation to SampleOptions
+impl From<&LlamaInvocation> for SampleOptions {
+    fn from(invocation: &LlamaInvocation) -> Self {
+        SampleOptions {
+            top_k: invocation.top_k,
+            top_p: invocation.top_p,
+            temp: invocation.temp,
+            mirostat: invocation.mirostat,
+            mirostat_tau: invocation.mirostat_tau,
+            mirostat_eta: invocation.mirostat_eta,
+            repeat_last_n: invocation.repeat_last_n,
+            repeat_penalty: invocation.repeat_penalty,
+            frequency_penalty: invocation.frequency_penalty,
+            presence_penalty: invocation.presence_penalty,
+            penalize_nl: invocation.penalize_nl,
+            tfs_z: invocation.tfs_z,
+            typical_p: invocation.typical_p,
+            logit_bias: invocation.logit_bias.clone(),
+        }
+    }
+}
+
+pub struct SampleOptions {
+    top_k: i32,
+    top_p: f32,
+    temp: f32,
+    mirostat: i32,
+    mirostat_tau: f32,
+    mirostat_eta: f32,
+    repeat_last_n: i32,
+    repeat_penalty: f32,
+    frequency_penalty: f32,
+    presence_penalty: f32,
+    penalize_nl: bool,
+    tfs_z: f32,
+    typical_p: f32,
+    logit_bias: HashMap<i32, f32>,
 }
 
 // Provides thread-safe behavior for LLamaContext.
